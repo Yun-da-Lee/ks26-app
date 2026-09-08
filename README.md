@@ -18,7 +18,9 @@ KubeSummit 2026 工作坊用的骨架。**這裡只有契約，沒有程式。**
 4. 拿 `hard-constraints.md` 逐條對 diff，組內決定誰署名，按 Merge。
 5. 到建置看板複製映像檔標籤，填進 `deploy/deployment.yaml` 的 `image` 與 `IMAGE_TAG`，
    `deploy/ingress.yaml` 的 host 改成自己的組號，commit 到 `main`。
-6. 在 Rancher 建 GitRepo 指向自己的 fork，等 Fleet 收斂，開網址看畫面上的 SHA。
+6. 在 Rancher 建 GitRepo 指向自己的 fork（`Continuous Delivery → Resources → Git Repos →
+   Add Repository`；**`Branch Name` 預設是 `master`，要改成 `main`**），等 Fleet 收斂，
+   開網址對**頁尾**那行的映像檔標籤。
 
 ## 分支
 
