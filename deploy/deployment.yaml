@@ -25,7 +25,7 @@ spec:
       containers:
         - name: ks26-app
           # 標籤是 commit SHA，唯一且不重複使用。
-          image: docker.io/yansheng133/ks26-app:group6-REPLACE_SHA
+          image: docker.io/yansheng133/ks26-app:group6-3a7d2be
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
