@@ -10,7 +10,7 @@ spec:
   ingressClassName: traefik
   rules:
     # 回到自己的環境請把 host 換成你們那一組的網域。
-    - host: group1.52.194.49.7.nip.io
+    - host: group6.52.194.49.7.nip.io
       http:
         paths:
           - path: /
