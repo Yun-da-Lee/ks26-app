@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ks26-app
+  labels:
+    app.kubernetes.io/name: ks26-app
+    app.kubernetes.io/part-of: ks26
+spec:
+  # 明寫 class，不吃叢集預設值：目標叢集跑的是 RKE2 內建的 traefik。
+  ingressClassName: traefik
+  rules:
+    # 回到自己的環境請把 host 換成你們那一組的網域。
+    - host: group1.52.194.49.7.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ks26-app
+                port:
+                  number: 80

@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ks26-app
+  labels:
+    app.kubernetes.io/name: ks26-app
+    app.kubernetes.io/part-of: ks26
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ks26-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ks26-app
+        app.kubernetes.io/part-of: ks26
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ks26-app
+          # 標籤是 commit SHA，唯一且不重複使用。
+          image: docker.io/yansheng133/ks26-app:group1-REPLACE_SHA
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # 設定全部由 ConfigMap 注入，換環境不必重建映像檔。
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: PORT
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: APP_NAME
+            - name: APP_OWNER
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: APP_OWNER
+            - name: IMAGE_TAG
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: IMAGE_TAG
+            - name: INFERENCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: INFERENCE_URL
+            - name: INFERENCE_TIMEOUT_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: INFERENCE_TIMEOUT_SECONDS
+            - name: DEGRADED_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: ks26-app-config
+                  key: DEGRADED_MESSAGE
+            # 憑證只以參照方式取得，宣告裡不放任何值；物件不存在時照樣啟動（降級）。
+            - name: INFERENCE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ks26-app-inference
+                  key: apiKey
+                  optional: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          securityContext:
+            privileged: false
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL

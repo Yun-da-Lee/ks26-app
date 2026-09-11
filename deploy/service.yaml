@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ks26-app
+  labels:
+    app.kubernetes.io/name: ks26-app
+    app.kubernetes.io/part-of: ks26
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: ks26-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      # 與 deployment 的 containerPort 同一個值，不用猜。
+      targetPort: 8080

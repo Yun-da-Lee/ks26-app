@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ks26-app-config
+  labels:
+    app.kubernetes.io/name: ks26-app
+    app.kubernetes.io/part-of: ks26
+data:
+  # 唯一的 HTTP 埠。deployment 的 containerPort 與 service 的 targetPort 都對著它。
+  PORT: "8080"
+  APP_NAME: "ks26 內部知識問答"
+  # 出事時要找得到人：實名 + 聯絡方式，不留佔位字串。
+  APP_OWNER: "group6 / Darren"
+  # 與 deployment 的 image 標籤一致，畫面上顯示的就是這個值。
+  IMAGE_TAG: "group6-REPLACE_SHA"
+  # 推論後端位址。留空＝沒有後端，服務進入降級模式但仍然健康。
+  INFERENCE_URL: ""
+  INFERENCE_TIMEOUT_SECONDS: "5"
+  DEGRADED_MESSAGE: "目前沒有可用的推論後端，這是降級回覆：問題已收到，但無法產生答案。請改查內部知識庫，或稍後再試。"
